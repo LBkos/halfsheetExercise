@@ -8,14 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var openSheet = false
+    @State var sheetText = "Medium Sheet View"
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            Button("Open Sheet") {
+                openSheet.toggle()
+            }
+            .buttonStyle(.bordered)
         }
-        .padding()
+        .sheet(isPresented: $openSheet) {
+            GeometryReader { geo in
+                Text(sheetText)
+                    .frame(width: geo.size.width, height: geo.size.height, alignment: .center)
+                    .onChange(of: geo.size) { newValue in
+                        if geo.size.height > UIScreen.main.bounds.height / 2 {
+                            sheetText = "Large Sheet View"
+                        } else {
+                            sheetText = "Medium Sheet View"
+                        }
+                    }
+            }
+            .presentationDetents([.medium, .large])
+        }
+        
+        
     }
 }
 
